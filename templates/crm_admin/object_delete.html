@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<main style="margin-left: 800px; margin-top: 50px;">
+  <h5>是否确定删除该条数据？</h5>
+
+    {% for line in relation_list %}
+    <span>{{ line.name }}:{{ line.related_name }}</span>
+    {% endfor %}
+    <div class="select-box" style="width: 400px; margin-top: 30px;">
+        <form method="post" style="width: 100px;">
+            {% csrf_token %}
+            <input type="text" value="{{ custom_func }}" name="custom_func" style="display: none;">
+            <input type="text" value="{{ objects }}" name="selected_obj" style="display: none;">
+            <input type="text" value="yes" name="yes" style="display: none;">
+            <button id="yes" type="submit" class="btn btn-default" style="background-color: red;"><a style="color: white;">是的</a></button>
+        </form>
+        <form method="post" style="width: 100px; float: right; margin-top: -38px;">
+            {% csrf_token %}
+            <input type="text" value="no" name="no" style="display: none;">
+            <button id="no" type="submit" class="btn btn-default"><a>算了吧</a></button>
+        </form>
+    </div>
+
+
+    <!--<script src="\static\js\jquery-3.2.1.slim.min.js.下载"></script>-->
+
+    <!--<script>-->
+        <!--$('#yes').click(function(){-->
+            <!--$.ajax(){-->
+                <!--url: window.location.href,-->
+                <!--type: 'post',-->
+                <!--data: 'status': 'yes',-->
+                <!--success: function(){-->
+                    <!--window.location.href = ''-->
+                <!--}-->
+            <!--}-->
+        <!--})-->
+    <!--</script>-->
+</main>
+
+
+{% endblock %}
+

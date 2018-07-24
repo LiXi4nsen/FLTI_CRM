@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% load tags %}
+
+{% block body %}
+
+<main role="main" style="width: 70%; margin-left: 400px; margin-top: 50px;">
+    <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+        <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+            <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0">
+
+            </div>
+        </div>
+        <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+            <div style="position:absolute;width:200%;height:200%;left:0; top:0">
+
+            </div>
+        </div>
+    </div>
+{% for app_name, app_data in show_table.items %}
+  <h2>{{ app_name }}</h2>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>数据表名</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for table_name, table_body in app_data.items %}
+        <tr>
+          <td>
+              <a href="{% url 'show_tables' app_name table_name %}">{% render_table_name table_body %}</a>
+          </td>
+          <td>增加数据表</td>
+          <td>修改数据表</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endfor %}
+</main>
+{% endblock %}
+

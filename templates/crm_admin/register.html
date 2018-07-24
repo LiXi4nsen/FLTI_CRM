@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://v4.bootcss.com/favicon.ico">
+    <title>注册</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/static/css/dashboard.css" rel="stylesheet">
+    <style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}
+    </style>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+    <form class="form-horizontal" role="form" method="post">
+    {% csrf_token %}
+        <span style="color: red">{{ user_create_form.errors }}</span>
+    {% for line in user_create_form %}
+        <div class="form-group">
+            <label class="col-sm-2 control-label" style="font-weight: normal">
+                <b>{{ line.label }}</b>:{{ line }}
+            </label>
+        </div>
+    {% endfor %}
+        <input type="submit" value="注册">
+
+    </form>
+</body>
+</html>

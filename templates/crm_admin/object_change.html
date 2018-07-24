@@ -1,0 +1,33 @@
+{% extends 'crm_admin/index.html' %}
+
+
+{% block body %}
+<link href="/static/css/object_change.css" rel="stylesheet">
+
+<form class="form-horizontal" method="post">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row" style="padding: 20px 0">
+            <h3>数据修改</h3>
+        </div>
+        {{ form_object.errors }}
+        {% for line in form_object %}
+        <div class="row form-group">
+                {% if line.field.required %}
+                <label class="control-label col-lg-1" for=><b>{{ line.label }}</b>:</label>
+                {% else %}
+                <label class="control-label col-lg-1" for=>{{ line.label }}:</label>
+                {% endif %}
+            <div class="col-lg-5 col-md-6">
+                <!--<input class="form-control" name="name" id="name" type="text">-->
+                {{ line }}
+            </div>
+        </div>
+        {% endfor %}
+        <input type="submit" value="保存" class="btn btn-success">
+        <button class="btn btn-default" style="background-color: red;"><a style="color: white;" href="delete">删除</a></button>
+    </div>
+</form>
+
+
+{% endblock %}

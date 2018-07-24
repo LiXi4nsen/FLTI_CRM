@@ -1,0 +1,167 @@
+{% extends 'crm_admin\index.html' %}
+
+{% load tags %}
+
+{% block body %}
+        <link href="/static/css/show_tables.css" rel="stylesheet">
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" style="width: 80%; margin-left: 200px; margin-top: 50px;">
+            <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0">
+
+                    </div>
+                </div>
+                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:200%;height:200%;left:0; top:0">
+                    </div>
+                </div>
+            </div>
+
+          <h2>{% render_table_name table_object %}</h2>
+
+          <div class="filter-box" style="width: 100%;">
+            <form class="filter-form" method="get" style="width: 1700px;">
+
+              {% for filter_field in table_object.list_filter %}
+                <div class="filter-select">
+                <span>{% render_verbose_name table_object filter_field %}</span>
+                {% render_filter_ele filter_field table_object filter_dict %}
+                </div>
+
+              {% endfor %}
+
+                <div class="row" style="float: left; margin-left: 0px; width: 240px; height: 68px; margin-top: -21px;">
+                  <div class="col-lg-6" style="">
+                    <div class="input-group" style="margin-top: 30px;">
+                        <span>精确搜索</span>
+                      <input type="text" class="form-control" placeholder="搜索..." name="s" style="width: 200px;">
+                      <span class="input-group-btn">
+                        <!--<button class="btn btn-default" type="submit" style="float: left;">搜索</button>-->
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <button type="SUBMIT" class="filter-button btn btn-default" style="width: 58px; height: 38px;">筛选</button>
+            </form>
+            <form method="post">
+                {% csrf_token %}
+                <div class="filter-select" style="float: left; margin-left: 20px;">
+                    <span>自定义操作</span>
+                    <select class="form-control" name="custom_func">
+                            <option>----</option>
+                        {% for func in admin_class.custom_function_list %}
+                            <option class="{{ func }}" value="{{ func }}">{{ func }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" style="display: none;" name="selected_obj" value="" id="selected_obj">
+                    <button class="btn btn-default" type="submit" style="margin-top: -68px; position: activate; margin-left: 210px;" onclick="GetSelectValue()">执行</button>
+                </div>
+            </form>
+
+
+
+
+          <div class="table-responsive">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                    <th><input type=checkbox id="all" onclick="SelectAll(this)"></th>
+                  {% for header in table_object.list_display %}
+                    <th>{% render_header table_object url_parameter header %}</th>
+                    <!--<th><a href="?{{ url_parameter }}&o={{ header }}" class="headers" style="text-decoration: none; color: black;">{% render_verbose_name table_object header %}</a></th>-->
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+              {% get_models table_object as models %}
+              {% for line in page_data %}
+
+              {% create_lines line table_object.list_display request %}
+                <tr>
+                  <td>{{ create_lines }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div>
+              <span>总计{{ page_data.paginator.count }}条</span>
+              <button style="float: right;" class="btn btn-default"><a href="{{ request.path }}/add" style="text-decoration: none; out-line: none; color: black;">增加</a></button>
+          </div>
+          <nav>
+              <div class="pagination-box">
+                  <ul class="pagination-ul">
+                      {% render_page_index page_data %}
+                      {% if page_data.has_previous %}
+                        {% if order_field == '' %}
+                            <li class="prev-page"><a href="?{{ url_parameter }}&page={{ page_data.previous_page_number }}">上页</a></li>
+                        {% else %}
+                            <li class="prev-page"><a href="?{{ url_parameter }}&page={{ page_data.previous_page_number }}&o={{ order_field }}">上页</a></li>
+                            <!--<li class=""><a>...</a></li>-->
+                        {% endif %}
+                      {% else %}
+                            <li><a>上页</a></li>
+                      {% endif %}
+    {#                   <li class="active"><a>{{ page_data.number }}</a></li>#}
+
+                      {% for loop_counter in page_data.paginator.page_range %}
+                            {% render_page_ele  loop_counter page_data url_parameter order_field %}
+                      {% endfor %}
+
+                      {% if page_data.has_next %}
+                            <!--<li class=""><a>...</a></li>-->
+                         {% if order_field == '' %}
+                            <li class="next-page"><a href="?{{ url_parameter }}&page={{ page_data.next_page_number }}">下页</a></li>
+                         {% else %}
+                            <li class="next-page"><a href="?{{ url_parameter }}&page={{ page_data.next_page_number }}&o={{ order_field }}">下页</a></li>
+                         {% endif %}
+                      {% else %}
+                            <li class=""><a>下页</a></li>
+                      {% endif %}
+
+
+    {#                <li class="disabled"><a href="#">&laquo;</a></li>#}
+    {#                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>#}
+    {#                #}
+                  </ul>
+              </div>
+          </nav>
+          </div>
+        </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery-3.2.1.slim.min.js.下载" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/static/js/jquery-slim.min.js"><\/script>')</script>
+    <script src="/static/js/popper.min.js.下载"></script>
+    <script src="/static/js/bootstrap.min.js.下载"></script>
+
+    <!-- Icons -->
+    <script src="/static/js/feather.min.js.下载"></script>
+    <script>
+      feather.replace()
+    </script>
+
+    <!-- Graphs -->
+    <script src="/static/js/Chart.min.js.下载"></script>
+    <script>
+        function SelectAll(self){
+            if ( $(self).prop("checked")){
+                $("input[tag='obj_checkbox']").prop("checked",true);
+            }else {
+                $("input[tag='obj_checkbox']").prop("checked",false);
+            }
+        }
+
+        function GetSelectValue(){
+             var selected_id = []
+             var checked = $('input[type=checkbox]:checked').each(function(){
+                selected_id.push($(this).val());
+             })
+             $('#selected_obj').attr('value', selected_id)
+        }
+
+    </script>
+
+{% endblock %}
