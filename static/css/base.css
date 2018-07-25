@@ -1,0 +1,11 @@
+.hidden {
+    display: none;
+}
+
+.user-settings {
+    width: 100px;
+    height: 150px;
+    float: right;
+    background-color: pink;
+    margin-right: 35px;
+}
