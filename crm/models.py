@@ -247,7 +247,7 @@ class UserProfile(AbstractBaseUser):
     )
 
     name = models.CharField(max_length=32, verbose_name='姓名')
-    number = models.CharField(max_length=32, verbose_name='工号')
+    number = models.CharField(max_length=32, verbose_name='工号/学号')
     roles = models.ForeignKey('Role', blank=True, null=True)
 
     is_active = models.BooleanField(default=True)

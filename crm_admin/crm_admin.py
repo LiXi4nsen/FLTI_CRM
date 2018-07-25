@@ -53,13 +53,12 @@ class CustomerAdmin(BaseAdmin):
     list_display = ['name', 'qq', 'source', 'consult_course', 'note', 'date']
     list_filter = ['source', 'consultant', 'consult_course', 'date']
     search_field = ['name', 'qq', 'note']
-    list_per_page = 5
+    list_per_page = 10
     date_range_field = [1, 3, 7, 30, 90, 365]
     custom_function_list = ['delete_all', 'hello_world']
     readonly_fields = ['qq', 'consultant']
 
     def hello_world(self, request, objects, app_name, table_name):
-
 
         return HttpResponse('HelloWorld')
 

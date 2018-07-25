@@ -4,8 +4,11 @@ import importlib
 import re
 from django.shortcuts import render, redirect, HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from forms import create_model_form, UserCreationForm
 from crm.models import UserProfile
+from school_crm.settings import URL_LOGIN
 import crm_admin
 import plug
 
@@ -26,26 +29,38 @@ def register(request):
     return render(request, 'crm_admin/register.html', {'user_create_form': UserCreationForm})
 
 
-def login(request):
+def user_login(request):
 
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if UserProfile.objects.filter(email=username) and UserProfile.objects.get(email=username).password == password:
-            user_profile = UserProfile.objects.get(email=username)
-            request.session['user_profile'] = user_profile.email
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            request.session['user_profile'] = user.email
             return HttpResponseRedirect('index')
 
     return render(request, 'crm_admin/login.html')
 
 
+def user_logout(request):
+
+    logout(request)
+
+    return HttpResponseRedirect('login')
+
+
+@login_required(login_url=URL_LOGIN)
 def index(request):
 
+    user_profile = UserProfile.objects.filter(email=request.session.get('user_profile'))
     show_table = crm_admin.registered_models
 
-    return render(request, 'crm_admin/index.html', {'show_table': show_table})
+    return render(request, 'crm_admin/index.html', {'show_table': show_table,
+                                                    'user_profile': user_profile})
 
 
+@login_required(login_url=URL_LOGIN)
 def show_tables(request, app_name, table_name):
 
     admin_class = crm_admin.registered_models[app_name][table_name]
@@ -91,6 +106,7 @@ def show_tables(request, app_name, table_name):
                                                           'admin_class': admin_class})
 
 
+@login_required(login_url=URL_LOGIN)
 def object_change(request, app_name, table_name, objects):
 
     admin_class = crm_admin.registered_models[app_name][table_name]
@@ -111,6 +127,7 @@ def object_change(request, app_name, table_name, objects):
                                                             'admin_class': admin_class})
 
 
+@login_required(login_url=URL_LOGIN)
 def object_add(request, app_name, table_name):
 
     admin_class = crm_admin.registered_models[app_name][table_name]
@@ -128,6 +145,7 @@ def object_add(request, app_name, table_name):
         return render(request, 'crm_admin/object_add.html', {'form_object': form_object})
 
 
+@login_required(login_url=URL_LOGIN)
 def object_delete(request, app_name, table_name, objects_id):
 
     admin_class = crm_admin.registered_models[app_name][table_name]

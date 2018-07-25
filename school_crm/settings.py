@@ -130,3 +130,7 @@ STATICFILES_DIRS = (
 )
 
 AUTH_USER_MODEL = 'crm.UserProfile'
+
+URL_LOGIN = '/crm_admin/login'
+
+

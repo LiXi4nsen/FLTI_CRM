@@ -12,6 +12,7 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/static/css/dashboard.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
     <style type="text/css">/* Chart.js */
 @-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}
     </style>
@@ -22,22 +23,27 @@
 <body>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
   <a class="navbar-brand mr-0" href="#" style="width: 200px; padding-left: 50px;">外语培训</a>
-  <ul class="navbar-nav px-3" style="margin-right: 20px;">
+  <ul class="navbar-nav px-3" style="margin-right: 50px;">
     <!--<li class="search-button">-->
         <!--<a href="">搜索</a>-->
     <!--</li>-->
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">{{ request.user }}</a>
+      <a class="nav-link" href="#"  onclick="DisplayUserSettings(self)">{{ request.user.name }}</a>
     </li>
   </ul>
 </nav>
+<div class="user-settings hidden">
+    <ul style="list-style: none; margin: auto;">
+        <li><a href="logout">注销</a></li>
+    </ul>
+</div>
 
     <div class="container-fluid" style="width: 315px;">
       <div class="row" style="width: 315px;">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="width: 200px;">
           <div class="sidebar-sticky" style="height: 320px; width: 315px;">
             <ul class="nav flex-column" style="margin-top: 30px;">
-            {% for menu in request.user.userprofile.roles.show_menu.all %}
+            {% for menu in request.user.roles.show_menu.all %}
               <li class="nav-item">
                 <a class="nav-link active" href='{{ menu.absolute_url }}'>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -50,7 +56,41 @@
         </nav>
       </div>
     </div>
-</body>
+
+<script src="/static/js/jquery-3.2.1.slim.min.js.下载" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/static/js/jquery-slim.min.js"><\/script>')</script>
+<script src="/static/js/popper.min.js.下载"></script>
+<script src="/static/js/bootstrap.min.js.下载"></script>
+
+<!-- Icons -->
+<script src="/static/js/feather.min.js.下载"></script>
+<script>
+  feather.replace()
+</script>
+
+<!-- Graphs -->
+<script src="/static/js/Chart.min.js.下载"></script>
+
+<script>
+    function DisplayUserSettings(self){
+        if ($('.hidden').attr('class')) {
+            $('.hidden').attr('class', 'user-settings');
+        }
+        else {
+            $('.user-settings').attr('class', 'hidden');
+        }
+    }
+
+</script>
+
+
+{% block script %}
+{% endblock %}
+
+
 {% block body %}
 {% endblock %}
+</body>
+
+
 </html>

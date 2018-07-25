@@ -30,7 +30,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('email', 'name', 'number')
+        fields = ('email', 'name', 'number', 'roles')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -75,10 +75,10 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'name', 'number', 'is_admin')
+    list_display = ('email', 'name', 'number', 'is_admin', 'roles')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password', 'number', 'roles')}),
         ('Personal info', {'fields': ('name',)}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
@@ -87,9 +87,9 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'number', 'password1', 'password2')}
+            'fields': ('email', 'name', 'number', 'roles', 'password1', 'password2')}
         ),
     )
-    search_fields = ('email', 'number')
+    search_fields = ('email', 'number', 'name')
     ordering = ('email',)
     filter_horizontal = ()
