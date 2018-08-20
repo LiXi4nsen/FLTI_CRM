@@ -21,6 +21,9 @@
             <div class="col-lg-5 col-md-6">
                 <!--<input class="form-control" name="name" id="name" type="text">-->
                 {{ line }}
+                {% if line.label == 'Password' %}
+                    <a href="change/password">修改密码</a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

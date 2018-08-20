@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, HttpResponseRedirect, HttpRespons
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from forms import create_model_form, UserCreationForm
+from forms import create_model_form, UserCreationForm, UserChangeForm
 from crm.models import UserProfile
 from school_crm.settings import URL_LOGIN
 import crm_admin
@@ -35,10 +35,11 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            request.session['user_profile'] = user.email
-            return HttpResponseRedirect('index')
+        if user:
+            if user is not None:
+                login(request, user)
+                request.session['user_profile'] = user.email
+                return HttpResponseRedirect('index')
 
     return render(request, 'crm_admin/login.html')
 
@@ -48,6 +49,32 @@ def user_logout(request):
     logout(request)
 
     return HttpResponseRedirect('login')
+
+
+def user_settings(request):
+
+    user_change_form = UserChangeForm(request.user)
+
+    return render(request, 'crm_admin/settings.html')
+
+
+def password_change(request, app_name, table_name, objects):
+
+    error_dict = {}
+
+    if request.method == 'POST':
+        user_profile = UserProfile.objects.get(id=objects)
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if password1 == password2:
+            user_profile.set_password(password2)
+            user_profile.save()
+            return HttpResponseRedirect('login')
+        else:
+            error_dict['input_error'] = '两次密码输入不一致!'
+            return render(request, 'crm_admin/password_change.html', {'error_dict': error_dict})
+
+    return render(request, 'crm_admin/password_change.html')
 
 
 @login_required(login_url=URL_LOGIN)
@@ -110,7 +137,7 @@ def show_tables(request, app_name, table_name):
 def object_change(request, app_name, table_name, objects):
 
     admin_class = crm_admin.registered_models[app_name][table_name]
-    model_form = create_model_form(request, admin_class)
+    model_form = create_model_form(admin_class.model)
     form_parameter = admin_class.model.objects.get(id=objects)
 
     if request.method == 'POST':

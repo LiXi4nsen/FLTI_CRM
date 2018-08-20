@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 # Create your models here.
 
@@ -237,7 +237,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class UserProfile(AbstractBaseUser):
+class UserProfile(AbstractBaseUser, PermissionsMixin):
     """账户表"""
 
     email = models.EmailField(

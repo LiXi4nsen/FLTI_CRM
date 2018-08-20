@@ -9,15 +9,18 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from crm.models import UserProfile
 
 
-def create_model_form(request, admin_class):
+def create_model_form(admin_class):
 
     class Meta:
-        model = admin_class.model
+        model = admin_class
         fields = '__all__'
 
     attribute = {str('Meta'): Meta}
 
     model_form = type(str('ModelForm'), (forms.ModelForm,), attribute)
+
+    if admin_class is UserProfile:
+        model_form.base_fields['password'].widget.attrs.update({'readonly': 'readonly'})
 
     return model_form
 
@@ -80,7 +83,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password', 'number', 'roles')}),
         ('Personal info', {'fields': ('name',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_admin', 'groups', 'user_permissions')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -92,4 +95,4 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ('email', 'number', 'name')
     ordering = ('email',)
-    filter_horizontal = ()
+    filter_horizontal = ('groups', 'user_permissions')

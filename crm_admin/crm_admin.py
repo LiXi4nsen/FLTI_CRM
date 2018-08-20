@@ -17,6 +17,7 @@ class BaseAdmin(object):
     date_range_field = []
     custom_function_list = ['delete_all']
     readonly_fields = []
+    filter_horizontal = ()
 
     def delete_all(self, request, objects, app_name, table_name):
 
@@ -57,6 +58,7 @@ class CustomerAdmin(BaseAdmin):
     date_range_field = [1, 3, 7, 30, 90, 365]
     custom_function_list = ['delete_all', 'hello_world']
     readonly_fields = ['qq', 'consultant']
+    filter_horizontal = ()
 
     def hello_world(self, request, objects, app_name, table_name):
 
@@ -71,6 +73,7 @@ class UserProfileAdmin(BaseAdmin):
     list_per_page = 5
     date_range_field = [3, 7, 30, 90, 365]
     custom_function_list = ['delete_all']
+    filter_horizontal = ('groups', 'user_permissions')
 
 
 def register(model_class, admin_class):

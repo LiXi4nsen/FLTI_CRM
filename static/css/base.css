@@ -6,6 +6,12 @@
     width: 100px;
     height: 150px;
     float: right;
-    background-color: pink;
+    background-color: #343a40;
     margin-right: 35px;
+    border: 1px solid #343a40;
+}
+
+.user-settings a {
+    border: 1px solid #343a40;
+    color: rgba(255,255,255,.5);;
 }
